@@ -1,0 +1,1708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#090a0f">
+<title>Home Game Launcher</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#08090d;
+  --panel:#11131b;
+  --panel2:#171a24;
+  --line:rgba(255,255,255,.09);
+  --text:#f7f7fa;
+  --muted:#9297a6;
+  --purple:#795cff;
+  --purple2:#a995ff;
+  --blue:#4ca5ff;
+  --green:#4ee2a1;
+  --yellow:#ffd45c;
+  --red:#ff687b;
+}
+
+body{
+  min-height:100vh;
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at 12% 0%,rgba(121,92,255,.22),transparent 30%),
+    radial-gradient(circle at 90% 15%,rgba(76,165,255,.10),transparent 28%),
+    var(--bg);
+  overflow-x:hidden;
+}
+
+button,input{font:inherit}
+button{color:inherit}
+a{text-decoration:none;color:inherit}
+
+/* TOP BAR */
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  height:70px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 5%;
+  background:rgba(8,9,13,.78);
+  border-bottom:1px solid var(--line);
+  backdrop-filter:blur(20px);
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  font-weight:850;
+}
+
+.brand-icon{
+  width:39px;
+  height:39px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:linear-gradient(135deg,var(--purple),#4936c8);
+  box-shadow:0 10px 30px rgba(121,92,255,.3);
+}
+
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.clock{
+  color:var(--muted);
+  font-size:13px;
+  padding:8px 11px;
+}
+
+.icon-btn{
+  width:39px;
+  height:39px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--line);
+  border-radius:11px;
+  background:rgba(255,255,255,.04);
+  cursor:pointer;
+  transition:.2s;
+}
+
+.icon-btn:hover{
+  background:rgba(255,255,255,.09);
+}
+
+/* HERO */
+
+.hero{
+  max-width:1200px;
+  margin:auto;
+  padding:76px 5% 35px;
+}
+
+.greeting{
+  color:var(--purple2);
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:1.7px;
+  text-transform:uppercase;
+  margin-bottom:15px;
+}
+
+.hero h1{
+  font-size:clamp(42px,7vw,76px);
+  line-height:.97;
+  letter-spacing:-4px;
+}
+
+.hero h1 span{
+  color:var(--purple2);
+}
+
+.hero p{
+  color:var(--muted);
+  max-width:650px;
+  margin-top:19px;
+  line-height:1.7;
+}
+
+/* SEARCH */
+
+.search{
+  position:relative;
+  max-width:760px;
+  margin-top:29px;
+}
+
+.search input{
+  width:100%;
+  height:57px;
+  padding:0 50px;
+  color:white;
+  background:rgba(255,255,255,.055);
+  border:1px solid var(--line);
+  border-radius:15px;
+  outline:none;
+  transition:.2s;
+}
+
+.search input:focus{
+  border-color:rgba(121,92,255,.7);
+  box-shadow:0 0 0 4px rgba(121,92,255,.1);
+}
+
+.search input::placeholder{
+  color:#717685;
+}
+
+.search-icon{
+  position:absolute;
+  left:18px;
+  top:15px;
+  color:var(--muted);
+  font-size:22px;
+}
+
+/* MAIN */
+
+main{
+  max-width:1200px;
+  margin:auto;
+  padding:0 5% 90px;
+}
+
+.section{
+  margin-top:38px;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  margin-bottom:16px;
+}
+
+.section-head h2{
+  font-size:22px;
+  letter-spacing:-.6px;
+}
+
+.section-head span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+/* CATEGORY BAR */
+
+.categories{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding-bottom:4px;
+  scrollbar-width:none;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
+}
+
+.category{
+  flex:0 0 auto;
+  padding:9px 13px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:rgba(255,255,255,.035);
+  color:var(--muted);
+  cursor:pointer;
+  font-size:12px;
+  transition:.2s;
+}
+
+.category:hover,
+.category.active{
+  color:white;
+  background:rgba(121,92,255,.18);
+  border-color:rgba(121,92,255,.4);
+}
+
+/* APPS */
+
+.apps{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+}
+
+.app{
+  position:relative;
+  min-height:205px;
+  padding:19px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  border-radius:18px;
+  background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.025));
+  transition:.22s;
+}
+
+.app:hover{
+  transform:translateY(-5px);
+  border-color:rgba(121,92,255,.42);
+  background:linear-gradient(145deg,rgba(121,92,255,.11),rgba(255,255,255,.025));
+}
+
+.app-icon{
+  width:55px;
+  height:55px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:linear-gradient(135deg,#282b3a,#151720);
+  border:1px solid var(--line);
+  font-size:23px;
+}
+
+.app-top{
+  display:flex;
+  justify-content:space-between;
+}
+
+.star{
+  width:32px;
+  height:32px;
+  border:0;
+  border-radius:9px;
+  background:rgba(255,255,255,.04);
+  color:#737887;
+  cursor:pointer;
+  font-size:17px;
+}
+
+.star.active{
+  color:var(--yellow);
+}
+
+.app h3{
+  margin-top:17px;
+  font-size:16px;
+}
+
+.app p{
+  margin-top:6px;
+  min-height:39px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.55;
+}
+
+.launch{
+  position:absolute;
+  left:19px;
+  right:19px;
+  bottom:17px;
+  height:37px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:10px;
+  color:#d9d2ff;
+  background:rgba(121,92,255,.13);
+  border:1px solid rgba(121,92,255,.18);
+  font-size:12px;
+  font-weight:750;
+  transition:.2s;
+}
+
+.launch:hover{
+  color:white;
+  background:var(--purple);
+}
+
+/* RECENT */
+
+.recent{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.recent-card{
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.035);
+}
+
+.recent-card strong{
+  display:block;
+  font-size:13px;
+}
+
+.recent-card small{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+}
+
+/* MIRRORS */
+
+.mirrors{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:10px;
+}
+
+.mirror{
+  padding:15px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.035);
+  transition:.2s;
+}
+
+.mirror:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.06);
+}
+
+.mirror-num{
+  color:var(--purple2);
+  font-size:10px;
+  font-weight:800;
+}
+
+.mirror h3{
+  margin-top:8px;
+  font-size:14px;
+}
+
+.mirror small{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+/* QA */
+
+.qa{
+  display:grid;
+  gap:9px;
+}
+
+details{
+  padding:17px 20px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,255,255,.035);
+}
+
+summary{
+  cursor:pointer;
+  list-style:none;
+  font-size:14px;
+  font-weight:700;
+}
+
+summary::-webkit-details-marker{
+  display:none;
+}
+
+summary::after{
+  content:"+";
+  float:right;
+  color:var(--muted);
+}
+
+details[open] summary::after{
+  content:"−";
+}
+
+details p{
+  margin-top:11px;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+}
+
+/* EMPTY */
+
+.empty{
+  display:none;
+  text-align:center;
+  padding:45px;
+  color:var(--muted);
+  border:1px dashed var(--line);
+  border-radius:16px;
+}
+
+/* SETTINGS */
+
+.overlay{
+  position:fixed;
+  inset:0;
+  z-index:90;
+  display:none;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(5px);
+}
+
+.overlay.open{
+  display:block;
+}
+
+.settings{
+  position:fixed;
+  z-index:100;
+  top:0;
+  right:0;
+  width:min(390px,92vw);
+  height:100vh;
+  padding:27px;
+  background:#11131b;
+  border-left:1px solid var(--line);
+  transform:translateX(100%);
+  transition:.28s;
+}
+
+.settings.open{
+  transform:translateX(0);
+}
+
+.settings-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:28px;
+}
+
+.settings h2{
+  font-size:21px;
+}
+
+.setting{
+  padding:18px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.setting strong{
+  font-size:14px;
+}
+
+.setting p{
+  margin-top:5px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
+.setting button{
+  width:100%;
+  margin-top:11px;
+  padding:11px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:rgba(255,255,255,.05);
+  cursor:pointer;
+}
+
+/* FOOTER */
+
+footer{
+  border-top:1px solid var(--line);
+  padding:28px 5%;
+  text-align:center;
+  color:var(--muted);
+  font-size:11px;
+}
+
+/* MOBILE */
+
+@media(max-width:1000px){
+  .apps{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .mirrors{
+    grid-template-columns:repeat(3,1fr);
+  }
+
+  .recent{
+    grid-template-columns:repeat(2,1fr);
+  }
+}
+
+@media(max-width:650px){
+  .apps{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .mirrors{
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .hero{
+    padding-top:58px;
+  }
+
+  .hero h1{
+    letter-spacing:-2.5px;
+  }
+}
+
+@media(max-width:450px){
+  .apps,
+  .mirrors,
+  .recent{
+    grid-template-columns:1fr;
+  }
+
+  .brand span:last-child{
+    display:none;
+  }
+
+  .hero h1{
+    font-size:45px;
+  }
+
+  .clock{
+    display:none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <a class="brand" href="#">
+    <span class="brand-icon">🎮</span>
+    <span>Home Game Hub</span>
+  </a>
+
+  <div class="top-right">
+
+    <span class="clock" id="clock">
+      --:--
+    </span>
+
+    <button
+      class="icon-btn"
+      id="settingsButton"
+      aria-label="Settings"
+    >
+      ⚙
+    </button>
+
+  </div>
+
+</header>
+
+
+<header class="hero">
+
+  <div class="greeting">
+    PERSONAL GAME LAUNCHER
+  </div>
+
+  <h1>
+    Welcome back.<br>
+    <span>What are you playing?</span>
+  </h1>
+
+  <p>
+    Your personal collection of game sites, apps,
+    favorites, and alternate links — all in one place.
+  </p>
+
+  <div class="search">
+
+    <span class="search-icon">⌕</span>
+
+    <input
+      id="search"
+      type="search"
+      placeholder="Search your games and apps..."
+      autocomplete="off"
+    >
+
+  </div>
+
+</header>
+
+
+<main>
+
+  <!-- CATEGORIES -->
+
+  <section class="section">
+
+    <div class="section-head">
+      <h2>Categories</h2>
+    </div>
+
+    <div class="categories">
+
+      <button class="category active" data-category="all">
+        All
+      </button>
+
+      <button class="category" data-category="games">
+        🎮 Games
+      </button>
+
+      <button class="category" data-category="sites">
+        🌐 Sites
+      </button>
+
+      <button class="category" data-category="tools">
+        🛠 Tools
+      </button>
+
+      <button class="category" data-category="favorites">
+        ⭐ Favorites
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- APPS -->
+
+  <section class="section">
+
+    <div class="section-head">
+
+      <h2>Apps & Games</h2>
+
+      <span id="appCount">
+        4 apps
+      </span>
+
+    </div>
+
+
+    <div class="apps" id="apps">
+
+
+      <article
+        class="app"
+        data-category="sites"
+        data-name="TinyURL"
+        data-url="https://tinyurl.com/bd759yd5"
+      >
+
+        <div class="app-top">
+
+          <div class="app-icon">
+            🔗
+          </div>
+
+          <button class="star">
+            ☆
+          </button>
+
+        </div>
+
+        <h3>TinyURL</h3>
+
+        <p>
+          Link from your personal collection.
+        </p>
+
+        <a class="launch" href="https://tinyurl.com/bd759yd5">
+          Launch →
+        </a>
+
+      </article>
+
+
+      <article
+        class="app"
+        data-category="games"
+        data-name="Cidsion"
+        data-url="https://cidsion.cfd"
+      >
+
+        <div class="app-top">
+
+          <div class="app-icon">
+            🌐
+          </div>
+
+          <button class="star">
+            ☆
+          </button>
+
+        </div>
+
+        <h3>Cidsion</h3>
+
+        <p>
+          Game site from your collection.
+        </p>
+
+        <a class="launch" href="https://cidsion.cfd">
+          Launch →
+        </a>
+
+      </article>
+
+
+      <article
+        class="app"
+        data-category="sites"
+        data-name="Salonfor Makeup"
+        data-url="https://salonfor.makeup"
+      >
+
+        <div class="app-top">
+
+          <div class="app-icon">
+            ✨
+          </div>
+
+          <button class="star">
+            ☆
+          </button>
+
+        </div>
+
+        <h3>Salonfor</h3>
+
+        <p>
+          Site from your personal collection.
+        </p>
+
+        <a class="launch" href="https://salonfor.makeup">
+          Launch →
+        </a>
+
+      </article>
+
+
+      <article
+        class="app"
+        data-category="games"
+        data-name="SerumOS"
+        data-url="https://s3.amazonaws.com/scholarnook/index.html"
+      >
+
+        <div class="app-top">
+
+          <div class="app-icon">
+            ⚡
+          </div>
+
+          <button class="star">
+            ☆
+          </button>
+
+        </div>
+
+        <h3>SerumOS</h3>
+
+        <p>
+          Game and app interface.
+        </p>
+
+        <a
+          class="launch"
+          href="https://s3.amazonaws.com/scholarnook/index.html"
+        >
+          Launch →
+        </a>
+
+      </article>
+
+
+    </div>
+
+
+    <div class="empty" id="empty">
+      🔎<br><br>
+      Nothing matched your search.
+    </div>
+
+  </section>
+
+
+  <!-- RECENT -->
+
+  <section class="section">
+
+    <div class="section-head">
+
+      <h2>Recently Opened</h2>
+
+      <span>
+        Saved on this device
+      </span>
+
+    </div>
+
+    <div class="recent" id="recent">
+
+      <div class="recent-card">
+        <strong>No recent apps yet</strong>
+        <small>Launch something above.</small>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- MIRRORS -->
+
+  <section class="section">
+
+    <div class="section-head">
+
+      <h2>Alternate Links</h2>
+
+      <span>5 links</span>
+
+    </div>
+
+
+    <div class="mirrors">
+
+
+      <article class="mirror">
+
+        <div class="mirror-num">
+          MIRROR 01
+        </div>
+
+        <h3>SmartLink</h3>
+
+        <small>
+          smartlink3930.b-cdn.net
+        </small>
+
+        <a
+          class="launch"
+          style="position:static;margin-top:12px"
+          href="https://smartlink3930.b-cdn.net"
+        >
+          Open →
+        </a>
+
+      </article>
+
+
+      <article class="mirror">
+
+        <div class="mirror-num">
+          MIRROR 02
+        </div>
+
+        <h3>NextNode</h3>
+
+        <small>
+          nextnode4459.b-cdn.net
+        </small>
+
+        <a
+          class="launch"
+          style="position:static;margin-top:12px"
+          href="https://nextnode4459.b-cdn.net"
+        >
+          Open →
+        </a>
+
+      </article>
+
+
+      <article class="mirror">
+
+        <div class="mirror-num">
+          MIRROR 03
+        </div>
+
+        <h3>LiteSite</h3>
+
+        <small>
+          litesite5225.b-cdn.net
+        </small>
+
+        <a
+          class="launch"
+          style="position:static;margin-top:12px"
+          href="https://litesite5225.b-cdn.net"
+        >
+          Open →
+        </a>
+
+      </article>
+
+
+      <article class="mirror">
+
+        <div class="mirror-num">
+          MIRROR 04
+        </div>
+
+        <h3>ApexNode</h3>
+
+        <small>
+          apexnode5178.b-cdn.net
+        </small>
+
+        <a
+          class="launch"
+          style="position:static;margin-top:12px"
+          href="https://apexnode5178.b-cdn.net"
+        >
+          Open →
+        </a>
+
+      </article>
+
+
+      <article class="mirror">
+
+        <div class="mirror-num">
+          MIRROR 05
+        </div>
+
+        <h3>QuickPath</h3>
+
+        <small>
+          quickpath4477.b-cdn.net
+        </small>
+
+        <a
+          class="launch"
+          style="position:static;margin-top:12px"
+          href="https://quickpath4477.b-cdn.net"
+        >
+          Open →
+        </a>
+
+      </article>
+
+
+    </div>
+
+  </section>
+
+
+  <!-- Q&A -->
+
+  <section class="section">
+
+    <div class="section-head">
+
+      <h2>Q&A</h2>
+
+      <span>Help</span>
+
+    </div>
+
+
+    <div class="qa">
+
+      <details>
+
+        <summary>
+          What do I do if the sites get blocked?
+        </summary>
+
+        <p>
+          School or network administrators may review
+          and block sites. If something is blocked,
+          follow the rules for the network you're using.
+        </p>
+
+      </details>
+
+
+      <details>
+
+        <summary>
+          What do I do if it says “Pretty::Print”?
+        </summary>
+
+        <p>
+          The site may not be loading correctly.
+          Try signing out and back in, or try again later.
+        </p>
+
+      </details>
+
+
+      <details>
+
+        <summary>
+          Have another question?
+        </summary>
+
+        <p>
+          If you have any more questions, email me.
+        </p>
+
+      </details>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<footer>
+  Home Game Hub · Your personal launcher
+</footer>
+
+
+<!-- SETTINGS -->
+
+<div class="overlay" id="overlay"></div>
+
+<aside class="settings" id="settings">
+
+  <div class="settings-head">
+
+    <h2>Settings</h2>
+
+    <button
+      class="icon-btn"
+      id="closeSettings"
+    >
+      ×
+    </button>
+
+  </div>
+
+
+  <div class="setting">
+
+    <strong>Favorites</strong>
+
+    <p>
+      Favorites are stored locally in your browser.
+    </p>
+
+    <button id="clearFavorites">
+      Clear Favorites
+    </button>
+
+  </div>
+
+
+  <div class="setting">
+
+    <strong>Recent Apps</strong>
+
+    <p>
+      Remove your recently opened list.
+    </p>
+
+    <button id="clearRecent">
+      Clear Recent
+    </button>
+
+  </div>
+
+
+  <div class="setting">
+
+    <strong>Search</strong>
+
+    <p>
+      Press / anywhere on the page to jump to search.
+    </p>
+
+    <button id="focusSearch">
+      Focus Search
+    </button>
+
+  </div>
+
+</aside>
+
+
+<script>
+
+/* ============================
+   CLOCK
+============================ */
+
+const clock =
+  document.getElementById("clock");
+
+function updateClock(){
+
+  const now = new Date();
+
+  clock.textContent =
+    now.toLocaleTimeString([],{
+      hour:"numeric",
+      minute:"2-digit"
+    });
+}
+
+updateClock();
+
+setInterval(updateClock,1000);
+
+
+/* ============================
+   SEARCH
+============================ */
+
+const search =
+  document.getElementById("search");
+
+const apps =
+  document.querySelectorAll(".app");
+
+const empty =
+  document.getElementById("empty");
+
+const appCount =
+  document.getElementById("appCount");
+
+
+function filterApps(){
+
+  const query =
+    search.value
+      .toLowerCase()
+      .trim();
+
+  let visible = 0;
+
+  apps.forEach(app => {
+
+    const name =
+      app.dataset.name.toLowerCase();
+
+    const category =
+      app.dataset.category.toLowerCase();
+
+    const matches =
+      name.includes(query) ||
+      category.includes(query);
+
+    app.style.display =
+      matches ? "" : "none";
+
+    if(matches) visible++;
+
+  });
+
+  appCount.textContent =
+    `${visible} ${
+      visible === 1 ? "app" : "apps"
+    }`;
+
+  empty.style.display =
+    visible ? "none" : "block";
+}
+
+
+search.addEventListener(
+  "input",
+  filterApps
+);
+
+
+/* ============================
+   CATEGORIES
+============================ */
+
+const categoryButtons =
+  document.querySelectorAll(".category");
+
+categoryButtons.forEach(button => {
+
+  button.addEventListener(
+    "click",
+    () => {
+
+      categoryButtons.forEach(
+        b => b.classList.remove("active")
+      );
+
+      button.classList.add("active");
+
+      const category =
+        button.dataset.category;
+
+      apps.forEach(app => {
+
+        const isFavorite =
+          favorites.includes(
+            [...apps].indexOf(app)
+          );
+
+        let visible = true;
+
+        if(category !== "all"){
+
+          if(category === "favorites"){
+            visible = isFavorite;
+          }else{
+            visible =
+              app.dataset.category === category;
+          }
+
+        }
+
+        if(search.value.trim()){
+
+          const query =
+            search.value
+              .toLowerCase()
+              .trim();
+
+          visible =
+            visible &&
+            (
+              app.dataset.name
+                .toLowerCase()
+                .includes(query) ||
+              app.dataset.category
+                .toLowerCase()
+                .includes(query)
+            );
+
+        }
+
+        app.style.display =
+          visible ? "" : "none";
+
+      });
+
+      updateCount();
+
+    }
+  );
+
+});
+
+
+function updateCount(){
+
+  let count = 0;
+
+  apps.forEach(
+    app => {
+
+      if(app.style.display !== "none")
+        count++;
+
+    }
+  );
+
+  appCount.textContent =
+    `${count} ${
+      count === 1 ? "app" : "apps"
+    }`;
+
+  empty.style.display =
+    count ? "none" : "block";
+}
+
+
+/* ============================
+   FAVORITES
+============================ */
+
+let favorites =
+  JSON.parse(
+    localStorage.getItem(
+      "homeGameFavorites"
+    ) || "[]"
+  );
+
+const stars =
+  document.querySelectorAll(".star");
+
+
+function refreshStars(){
+
+  stars.forEach(
+    (star,index) => {
+
+      if(favorites.includes(index)){
+
+        star.classList.add("active");
+        star.textContent = "★";
+
+      }else{
+
+        star.classList.remove("active");
+        star.textContent = "☆";
+
+      }
+
+    }
+  );
+}
+
+
+stars.forEach(
+  (star,index) => {
+
+    star.addEventListener(
+      "click",
+      event => {
+
+        event.preventDefault();
+
+        if(favorites.includes(index)){
+
+          favorites =
+            favorites.filter(
+              x => x !== index
+            );
+
+        }else{
+
+          favorites.push(index);
+
+        }
+
+        localStorage.setItem(
+          "homeGameFavorites",
+          JSON.stringify(favorites)
+        );
+
+        refreshStars();
+
+      }
+    );
+
+  }
+);
+
+
+refreshStars();
+
+
+/* ============================
+   RECENT APPS
+============================ */
+
+let recent =
+  JSON.parse(
+    localStorage.getItem(
+      "homeGameRecent"
+    ) || "[]"
+  );
+
+
+function saveRecent(name,url){
+
+  recent =
+    recent.filter(
+      item => item.url !== url
+    );
+
+  recent.unshift({
+    name:name,
+    url:url
+  });
+
+  recent =
+    recent.slice(0,4);
+
+  localStorage.setItem(
+    "homeGameRecent",
+    JSON.stringify(recent)
+  );
+
+  renderRecent();
+}
+
+
+function renderRecent(){
+
+  const container =
+    document.getElementById("recent");
+
+  if(!recent.length){
+
+    container.innerHTML = `
+      <div class="recent-card">
+        <strong>No recent apps yet</strong>
+        <small>Launch something above.</small>
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML =
+    recent.map(
+      item => `
+        <a
+          class="recent-card"
+          href="${item.url}"
+        >
+          <strong>${item.name}</strong>
+          <small>Open again →</small>
+        </a>
+      `
+    ).join("");
+
+}
+
+
+renderRecent();
+
+
+/* Track launches */
+
+document.querySelectorAll(".launch").forEach(
+  link => {
+
+    link.addEventListener(
+      "click",
+      () => {
+
+        const app =
+          link.closest(".app");
+
+        if(!app) return;
+
+        saveRecent(
+          app.dataset.name,
+          app.dataset.url
+        );
+
+      }
+    );
+
+  }
+);
+
+
+/* ============================
+   SETTINGS
+============================ */
+
+const settings =
+  document.getElementById("settings");
+
+const overlay =
+  document.getElementById("overlay");
+
+
+function openSettings(){
+
+  settings.classList.add("open");
+  overlay.classList.add("open");
+
+}
+
+
+function closeSettings(){
+
+  settings.classList.remove("open");
+  overlay.classList.remove("open");
+
+}
+
+
+document
+  .getElementById("settingsButton")
+  .addEventListener(
+    "click",
+    openSettings
+  );
+
+
+document
+  .getElementById("closeSettings")
+  .addEventListener(
+    "click",
+    closeSettings
+  );
+
+
+overlay.addEventListener(
+  "click",
+  closeSettings
+);
+
+
+/* ============================
+   CLEAR FAVORITES
+============================ */
+
+document
+  .getElementById("clearFavorites")
+  .addEventListener(
+    "click",
+    () => {
+
+      favorites = [];
+
+      localStorage.removeItem(
+        "homeGameFavorites"
+      );
+
+      refreshStars();
+
+    }
+  );
+
+
+/* ============================
+   CLEAR RECENT
+============================ */
+
+document
+  .getElementById("clearRecent")
+  .addEventListener(
+    "click",
+    () => {
+
+      recent = [];
+
+      localStorage.removeItem(
+        "homeGameRecent"
+      );
+
+      renderRecent();
+
+    }
+  );
+
+
+/* ============================
+   FOCUS SEARCH
+============================ */
+
+document
+  .getElementById("focusSearch")
+  .addEventListener(
+    "click",
+    () => {
+
+      closeSettings();
+
+      search.focus();
+
+      window.scrollTo({
+        top:0,
+        behavior:"smooth"
+      });
+
+    }
+  );
+
+
+/* ============================
+   KEYBOARD SEARCH
+============================ */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if(
+      event.key === "/" &&
+      document.activeElement !== search
+    ){
+
+      event.preventDefault();
+
+      search.focus();
+
+    }
+
+    if(event.key === "Escape"){
+      closeSettings();
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
+{
+  "name": "Home Game Hub",
+  "short_name": "Game Hub",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08090d",
+  "theme_color": "#08090d",
+  "description": "My personal home game launcher.",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+const CACHE = "game-hub-v1";
+
+const FILES = [
+  "./",
+  "./index.html",
+  "./manifest.json"
+];
+
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE).then(cache => cache.addAll(FILES))
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE)
+          .map(key => caches.delete(key))
+      )
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener("fetch", event => {
+  if (event.request.method !== "GET") return;
+
+  event.respondWith(
+    fetch(event.request)
+      .then(response => {
+        const copy = response.clone();
+
+        caches.open(CACHE).then(cache => {
+          cache.put(event.request, copy);
+        });
+
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
+});
